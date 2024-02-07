@@ -1,0 +1,31 @@
+<h1>Favorite Residences</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>City</th>
+      <th>District</th>
+      <th>Bedrooms</th>
+      <th>Rent</th>
+      <th>MRT Line</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @favorites.each do |favorite| %>
+      <tr>
+        <td><%= favorite.property.property_type %></td>
+        <td><%= favorite.property.city %></td>
+        <td><%= favorite.property.district %></td>
+        <td><%= favorite.property.bedrooms %></td>
+        <td><%= favorite.property.rent_per_month %></td>
+        <td><%= favorite.property.mrt_line %></td>
+        <td><%= favorite.property.net_size %></td>
+        <td>
+          <%= link_to "Remove from favorites", remove_favorite_path(property_id: favorite.property.id), method: :delete, remote: true %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

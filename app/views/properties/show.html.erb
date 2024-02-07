@@ -1,0 +1,44 @@
+<!-- app/views/properties/show.html.erb -->
+
+<h1>Property Details</h1>
+
+<div>
+  <strong>Title:</strong>
+  <%= @property.property_type %>
+</div>
+
+<div>
+  <strong>City:</strong>
+  <%= @property.city %>
+</div>
+
+<div>
+  <strong>District:</strong>
+  <%= @property.district %>
+</div>
+
+<div>
+  <strong>Bedrooms:</strong>
+  <%= @property.bedrooms %>
+</div>
+
+<div>
+  <strong>Rent Per Month:</strong>
+  <%= @property.rent_per_month %>
+</div>
+
+<div>
+  <strong>MRT Line:</strong>
+  <%= @property.mrt_line %>
+</div>
+
+<!-- Display image associated with the property -->
+<% if @property.image.attached? %>
+  <div>
+    <strong>Image:</strong>
+    <%= image_tag @property.image %>
+  </div>
+<% end %>
+
+<%= link_to "Edit Property", edit_property_path(@property), class: "btn btn-primary" %>
+<%= link_to "Back to Properties", properties_path, class: "btn btn-secondary" %>

@@ -1,0 +1,10 @@
+<% if user_signed_in? %>
+<h1>Welcome to Our Rental Marketplace!</h1>
+
+<%= link_to "View Properties", properties_path %>
+<%= link_to "View Favorite Residences", favorites_path %>
+ <%= button_to "Sign out", destroy_user_session_path, method: :delete %>
+
+<% else %>
+  <%= link_to 'Sign in', new_user_session_path %>
+<% end %>
