@@ -1,31 +1,63 @@
-<h1>Favorite Residences</h1>
+<div class="flex flex-col">
+  <div class="lg:px-6 px-2 flex justify-between items-center w-full text-white lg:py-4 py-2 mb-4 border-b bg-blue-900">
+    <%=link_to properties_path do%>
+      <h1 class="lg:text-4xl text-2xl font-semibold pb-2">Favorites Properties</h1>
+    <%end%>
+    <div class="flex items-center gap-2">
+      <%if current_user.present?%>
+        <%= link_to "View properties", properties_path, class: 'bg-green-600 lg:px-4 px-3 lg:py-2 py-1 rounded-lg cursor-pointer' %>
+        <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: 'bg-red-600 px-3 lg:py-2 py-1 rounded-lg cursor-pointer' %>
+      <%else%>
+        <%= link_to 'Sign in', new_user_session_path, class: 'bg-red-600 px-3 lg:py-2 py-1 rounded-lg cursor-pointer' %>
+      <%end%>
 
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>City</th>
-      <th>District</th>
-      <th>Bedrooms</th>
-      <th>Rent</th>
-      <th>MRT Line</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @favorites.each do |favorite| %>
-      <tr>
-        <td><%= favorite.property.property_type %></td>
-        <td><%= favorite.property.city %></td>
-        <td><%= favorite.property.district %></td>
-        <td><%= favorite.property.bedrooms %></td>
-        <td><%= favorite.property.rent_per_month %></td>
-        <td><%= favorite.property.mrt_line %></td>
-        <td><%= favorite.property.net_size %></td>
-        <td>
-          <%= link_to "Remove from favorites", remove_favorite_path(property_id: favorite.property.id), method: :delete, remote: true %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+   </div>
+  </div>
+
+  <div class="lg:px-10 md:px-8 px-4">
+  <%= form_with(url: properties_path, method: "get", html: {class:'mb-4 rounded-lg bg-gray-300 lg:py-4 py-1 lg:px-4 px-1'}) do %>
+    <div class="flex items-center justify-center gap-4 flex-wrap ">
+      <div class="lg:w-72 w-full flex justify-center gap-2">
+        <label for="property_type">Type:</label>
+        <%= select_tag :property_type, options_for_select(['Residential', 'Commercial', 'Industrial'], params[:property_type]) %>
+      </div>
+      <div class="lg:w-72 w-full flex justify-center gap-2">
+        <label for="city">City:</label>
+        <%= select_tag :city, options_for_select(Property.distinct.pluck(:city), params[:city]) %>
+      </div>
+      <div class="lg:w-72 w-full flex justify-center gap-2">
+        <label for="district">District:</label>
+        <%= select_tag :district, options_for_select(Property.distinct.pluck(:district), params[:district]) %>
+      </div>
+      <div class="lg:w-72 w-full flex justify-center gap-2">
+        <label for="net_size">Net Size:</label>
+        <%= select_tag :net_size, options_for_select(Property.distinct.pluck(:net_size), params[:net_size]) %>
+      </div>
+      <div class="lg:w-72 w-full flex justify-center gap-2">
+        <label for="rent_per_month">Rent Per Month:</label>
+        <%= select_tag :rent_per_month, options_for_select(Property.distinct.pluck(:rent_per_month), params[:rent_per_month]) %>
+      </div>
+    <%= submit_tag "Search", class: "!bg-green-600 !p-2 rounded-lg text-white cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <div class="flex items-center gap-4 justify-center w-full flex-wrap bg-gray-100 p-4">
+    <%@favorites.each do |fav|%>
+      <%= link_to property_path fav.property.id do%>
+        <div class="flex flex-col justify-center rounded-lg shadow  bg-white p-2">
+          <%if fav.property.image.attached?%>
+            <%= image_tag fav.property.image, class:'object-contain w-80 h-80' %>
+          <%else%>
+            <%= image_tag 'login', class: 'object-contain w-80 h-80' %>
+          <%end%>
+
+          <h1 class="text-lg font-bold text-red-400 border-t pt-2">$<%=fav.property.rent_per_month || 0%> / Month</h1>
+          <h2 class="text-xl capitalize"><%= fav.property.property_type %></h2>
+          <span class="text-sm text-gray-500"><%=fav.property.mrt_line%> <%= fav.property.city %> <%= fav.property.district%></span>
+          <%= button_to "Remove favorites", remove_favorite_path(property_id: fav.property.id), method: :delete, remote: true, class: "py-1 px-4 rounded-lg bg-red-600 text-white cursor-pointer", onclick: "return confirm('Are you sure to remove from favorites?')"  %>
+        </div>
+      <%end%>
+    <%end%>
+  </div>
+  </div>
+</div>

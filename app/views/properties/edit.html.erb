@@ -1,42 +1,72 @@
-<h1>Edit Property</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Property</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <style>
+    body {
+      padding-top: 10px;
+    }
+    .form-group {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Property</h1>
 
-<%= form_with(model: @property, url: property_path(@property), method: :patch) do |form| %>
-  <div class="form-group">
-    <%= form.label :property_type %>
-    <%= form.select :property_type, ['Residential'], class: "form-control" %>
+    <%= form_with(model: @property, url: property_path(@property), method: :patch, html: { class: "mt-4" }) do |form| %>
+      <div class="form-group">
+        <%= form.label :property_type, class: "form-label" %>
+        <%= form.select :property_type, ['Residential'], { include_blank: true }, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :city, class: "form-label" %>
+        <%= form.text_field :city, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :district, class: "form-label" %>
+        <%= form.text_field :district, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :bedrooms, class: "form-label" %>
+        <%= form.number_field :bedrooms, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :rent_per_month, class: "form-label" %>
+        <%= form.number_field :rent_per_month, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :mrt_line, class: "form-label" %>
+        <%= form.text_field :mrt_line, class: "form-control" %>
+      </div>
+
+      <div class="form-group">
+        <%= form.label :net_size, class: "form-label" %>
+        <%= form.text_field :net_size, class: "form-control" %>
+      </div>
+
+      <!-- File input field for uploading images -->
+      <div class="form-group">
+        <%= form.label :image, "Upload Images", class: "form-label" %>
+        <%= form.file_field :image, class: "form-control-file" %>
+      </div>
+
+      <%= form.submit "Update Property", class: "btn btn-primary" %>
+    <% end %>
   </div>
 
-  <div class="form-group">
-    <%= form.label :city %>
-    <%= form.text_field :city, class: "form-control" %>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :district %>
-    <%= form.text_field :district, class: "form-control" %>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :bedrooms %>
-    <%= form.number_field :bedrooms, class: "form-control" %>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :rent_per_month %>
-    <%= form.number_field :rent_per_month, class: "form-control" %>
-  </div>
-
-  <div class="form-group">
-    <%= form.label :mrt_line %>
-    <%= form.text_field :mrt_line, class: "form-control" %>
-  </div>
-
-  <!-- File input field for uploading images -->
-  <div class="form-group">
-    <%= form.label :image, "Upload Images" %>
-    <%= form.file_field :image, class: "form-control" %>
-  </div>
-
-  <%= form.submit "Update Property", class: "btn btn-primary" %>
-<% end %>
-
+  <!-- Bootstrap JS (optional) -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

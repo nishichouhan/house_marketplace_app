@@ -5,4 +5,7 @@ class User < ApplicationRecord
   has_many :favorite_properties, through: :favorites, source: :property
   self.inheritance_column = :type
 
+  def admin?
+    user_type == 'admin'
+  end
 end

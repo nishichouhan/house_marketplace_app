@@ -1,153 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Properties</title>
-  <style>
-    /* Styles for desktop */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    th {
-      background-color: #f2f2f2;
-    }
-    /* Styles for mobile */
-    @media only screen and (max-width: 600px) {
-      table, thead, tbody, th, td, tr {
-        display: block;
-      }
-      thead tr {
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-      }
-      tr { border: 1px solid #ccc; }
-      td {
-        border: none;
-        border-bottom: 1px solid #eee;
-        position: relative;
-        padding-left: 50%;
-      }
-      td:before {
-        position: absolute;
-        top: 6px;
-        left: 6px;
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        content: attr(data-label);
-      }
-    }
-    /* Additional styling for form */
-    form {
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    select {
-      width: 100%;
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-    input[type="submit"] {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    input[type="submit"]:hover {
-      background-color: #45a049;
-    }
-  </style>
-</head>
-<body>
+<div class="flex flex-col">
+  <div class="lg:px-6 px-2 flex justify-between items-center w-full text-white lg:py-4 py-2 mb-4 border-b bg-blue-900">
+    <%=link_to properties_path do%>
+      <h1 class="lg:text-4xl text-2xl font-semibold pb-2">HOUSE MARKETPLACE</h1>
+    <%end%>
+    <div class="flex items-center gap-2">
+      <%if current_user.present?%>
+        <%= link_to "View favorites", favorites_path, class: 'bg-green-600 lg:px-4 px-3 lg:py-2 py-1 rounded-lg cursor-pointer' %>
+        <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: 'bg-red-600 px-3 lg:py-2 py-1 rounded-lg cursor-pointer' %>
+      <%else%>
+        <%= link_to 'Sign in', new_user_session_path, class: 'bg-red-600 px-3 lg:py-2 py-1 rounded-lg cursor-pointer' %>
+      <%end%>
 
-<h1>All Properties</h1>
-<%= will_paginate @properties %>
-
-<%= form_with(url: properties_path, method: "get") do %>
-  <div style="display: flex; justify-content: space-between;">
-    <div style="width: 20%;">
-      <label for="property_type">Type:</label>
-      <%= select_tag :property_type, options_for_select(['Residential', 'Commercial', 'Industrial'], params[:property_type]) %>
-    </div>
-    <div style="width: 20%;">
-      <label for="city">City:</label>
-      <%= select_tag :city, options_for_select(Property.distinct.pluck(:city), params[:city]) %>
-    </div>
-    <div style="width: 20%;">
-      <label for="district">District:</label>
-      <%= select_tag :district, options_for_select(Property.distinct.pluck(:district), params[:district]) %>
-    </div>
-    <div style="width: 20%;">
-      <label for="net_size">Net Size:</label>
-      <%= select_tag :net_size, options_for_select(Property.distinct.pluck(:net_size), params[:net_size]) %>
-    </div>
-    <div style="width: 20%;">
-      <label for="rent_per_month">Rent Per Month:</label>
-      <%= select_tag :rent_per_month, options_for_select(Property.distinct.pluck(:rent_per_month), params[:rent_per_month]) %>
-    </div>
+   </div>
   </div>
-  <%= submit_tag "Search" %>
-<% end %>
+  <%= will_paginate @properties %>
 
-<table>
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>City</th>
-      <th>District</th>
-      <th>Bedrooms</th>
-      <th>Rent</th>
-      <th>MRT Line</th>
-      <th>NET SIZE</th>
-      <th>Actions</th> <!-- New column for favorite button -->
-    </tr>
-  </thead>
-  <tbody>
-    <% @properties.each do |property| %>
-      <tr>
-        <td data-label="Title"><%= property.property_type %></td>
-        <td data-label="City"><%= property.city %></td>
-        <td data-label="District"><%= property.district %></td>
-        <td data-label="Bedrooms"><%= property.bedrooms %></td>
-        <td data-label="Rent"><%= property.rent_per_month %></td>
-        <td data-label="MRT Line"><%= property.mrt_line %></td>
-        <td data-label="NET SIZE"><%= property.net_size %></td>
-        <td data-label="Actions">
-          <% if current_user&.favorite_properties&.include?(property) %>
-            <%= link_to "Remove from Favorites", remove_favorite_path(property_id: property.id), method: :delete, remote: true, class: "btn btn-danger btn-sm" %>
-          <% else %>
-            <%= form_with(url: add_favorite_path(property_id: property.id), method: "post", local: true) do |form| %>
-              <%= form.submit "Add to Favorites", class: "btn btn-primary btn-sm" %>
-            <% end %>
-          <% end %>
-          <% if current_user.user_type == "admin" %>
-            <%= link_to "Edit", edit_property_path(property), class: "btn btn-info btn-sm" %>
-            <%= button_to "Delete", property_path(property), method: :delete, class: "btn btn-danger btn-sm", onclick: "return confirm('Are you sure?')" %>
-          <% end %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="lg:px-10 md:px-8 px-4">
+  <%= form_with(url: properties_path, method: "get", html: {class:'mb-4 rounded-lg bg-gray-300 lg:py-4 py-1 lg:px-4 px-1'}) do %>
+    <div class="flex items-center justify-center gap-4 flex-wrap ">
+      <div class="lg:w-72 w-full flex justify-center gap-2">
+        <label for="property_type">Type:</label>
+        <%= select_tag :property_type, options_for_select(['Residential'], params[:property_type]) %>
+      </div>
+      <div class="lg:w-72 w-full flex justify-center gap-2">
+        <label for="city">City:</label>
+        <%= select_tag :city, options_for_select(Property.distinct.pluck(:city), params[:city]) %>
+      </div>
+      <div class="lg:w-72 w-full flex justify-center gap-2">
+        <label for="district">District:</label>
+        <%= select_tag :district, options_for_select(Property.distinct.pluck(:district), params[:district]) %>
+      </div>
+      <div class="lg:w-72 w-full flex justify-center gap-2">
+        <label for="net_size">Net Size:</label>
+        <%= select_tag :net_size, options_for_select(Property.distinct.pluck(:net_size), params[:net_size]) %>
+      </div>
+      <div class="lg:w-72 w-full flex justify-center gap-2">
+        <label for="rent_per_month">Rent Per Month:</label>
+        <%= select_tag :rent_per_month, options_for_select(Property.distinct.pluck(:rent_per_month), params[:rent_per_month]) %>
+      </div>
+    <%= submit_tag "Search", class: "!bg-green-600 !p-2 rounded-lg text-white cursor-pointer" %>
+    </div>
+  <% end %>
 
-</body>
-</html>
+
+
+  <div class="flex items-center gap-4 justify-center w-full flex-wrap bg-gray-100 p-4">
+    <%@properties.each do |property|%>
+        <div class="flex flex-col justify-center rounded-lg shadow  bg-white p-2">
+          <%= link_to property_path property.id do%>
+            <%if property.image.attached?%>
+              <%= image_tag property.image, class:'object-contain w-80 h-80' %>
+            <%else%>
+              <%= image_tag 'login', class: 'object-contain w-80 h-80' %>
+            <%end%>
+          <%end%>
+          <h1 class="text-lg font-bold text-red-400 border-t pt-2">$<%=property.rent_per_month || 0%> / Month</h1>
+          <h2 class="text-xl capitalize"><%= property.property_type %></h2>
+          <span class="text-sm text-gray-500"><%=property.mrt_line%> <%= property.city %> <%= property.district%></span>
+          <div class="w-full flex items-center justify-between mt-4">
+            <%if current_user&.user_type == 'admin'%>
+              <%=button_to 'Edit', edit_property_path(property.id), method: :get, class: 'py-1 px-4 rounded-lg bg-blue-600 text-white cursor-pointer'%>
+            <%end%>
+            <% if current_user&.favorite_properties&.include?(property) %>
+          <%= button_to "Remove favorites", remove_favorite_path(property_id: property.id), method: :delete, remote: true, class: "py-1 px-4 rounded-lg bg-red-600 text-white cursor-pointer", onclick: "return confirm('Are you sure to remove from favorites?')"  %>
+        <% else %>
+          <%= form_with(url: add_favorite_path(property_id: property.id), method: "post", local: true) do |form| %>
+            <button type="submit" class="btn btn-link text-danger">
+              &#x1F497;  <!-- Heart emoji -->
+            </button>
+          <% end %>
+        <% end %>
+            <%if current_user&.user_type == 'admin'%>
+              <%=button_to 'Delete', property_path(property.id), method: :delete, class: 'py-1 px-4 rounded-lg bg-red-600 cursor-pointer text-white' , onclick: "return confirm('Are you sure to delete property?')"%>
+            <%end%>
+          </div>
+        </div>
+    <%end%>
+  </div>
+  </div>
+</div>

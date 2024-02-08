@@ -1,44 +1,41 @@
-<!-- app/views/properties/show.html.erb -->
+<div class="flex flex-col w-full h-screen">
+  <div class="lg:px-6 px-2 flex justify-between items-center w-full text-white lg:py-4 py-2 mb-4 border-b bg-blue-900">
+    <%=link_to properties_path do%>
+    <h1 class="lg:text-4xl text-2xl font-semibold pb-2">View Properties</h1>
+    <%end%>
+    <div class="flex items-center gap-2">
+      <%if current_user.present?%>
+      <%= link_to "View favorites", favorites_path, class: 'bg-green-600 lg:px-4 px-3 lg:py-2 py-1 rounded-lg cursor-pointer' %>
+      <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: 'bg-red-600 px-3 lg:py-2 py-1 rounded-lg cursor-pointer' %>
+      <%else%>
+      <%= link_to 'Sign in', new_user_session_path, class: 'bg-red-600 px-3 lg:py-2 py-1 rounded-lg cursor-pointer' %>
+      <%end%>
 
-<h1>Property Details</h1>
-
-<div>
-  <strong>Title:</strong>
-  <%= @property.property_type %>
-</div>
-
-<div>
-  <strong>City:</strong>
-  <%= @property.city %>
-</div>
-
-<div>
-  <strong>District:</strong>
-  <%= @property.district %>
-</div>
-
-<div>
-  <strong>Bedrooms:</strong>
-  <%= @property.bedrooms %>
-</div>
-
-<div>
-  <strong>Rent Per Month:</strong>
-  <%= @property.rent_per_month %>
-</div>
-
-<div>
-  <strong>MRT Line:</strong>
-  <%= @property.mrt_line %>
-</div>
-
-<!-- Display image associated with the property -->
-<% if @property.image.attached? %>
-  <div>
-    <strong>Image:</strong>
-    <%= image_tag @property.image %>
+    </div>
   </div>
-<% end %>
-
-<%= link_to "Edit Property", edit_property_path(@property), class: "btn btn-primary" %>
-<%= link_to "Back to Properties", properties_path, class: "btn btn-secondary" %>
+  <div class="w-screen flex flex-col items-center justify-center h-full">
+    <div class="flex flex-col justify-center rounded-lg shadow  bg-white p-2">
+            <%if @property.image.attached?%>
+              <%= image_tag @property.image, class:'object-contain w-80 h-80' %>
+            <%else%>
+              <%= image_tag 'login', class: 'object-contain w-80 h-80' %>
+            <%end%>
+          <h1 class="text-lg font-bold text-red-400 border-t pt-2">$<%= @property.rent_per_month%> / Month</h1>
+          <h2 class="text-xl capitalize"><%= @property.property_type %></h2>
+          <span class="text-sm text-gray-500"><%= @property.mrt_line%> <%= @property.city %> <%= @property.district%></span>
+          <div class="w-full flex items-center justify-between mt-4">
+            <%if current_user.user_type == 'admin'%>
+              <%=button_to 'Edit', edit_property_path(@property.id), method: :get, class: 'py-1 px-4 rounded-lg bg-blue-600 text-white cursor-pointer'%>
+            <%end%>
+            <%= form_with(url: add_favorite_path(property_id: @property.id), method: "post", local: true) do |form| %>
+            <button type="submit" class="btn btn-link text-danger">
+              &#x1F497;  <!-- Heart emoji -->
+            </button>
+          <% end %>
+            <%if current_user.user_type == 'admin'%>
+              <%=button_to 'Delete', property_path(@property.id), method: :delete, class: 'py-1 px-4 rounded-lg bg-red-600 cursor-pointer text-white' , onclick: "return confirm('Are you sure to delete property?')"%>
+              <%end%>
+          </div>
+        </div>
+  </div>
+</div>

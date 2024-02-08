@@ -1,0 +1,21 @@
+defaults: &defaults
+  rent_lower_bound: 30000
+  rent_upper_bound: 100000
+  city:
+    - Taipei
+    - New Taipei
+  districts:
+    - Zqwerty
+    - Pqwerty
+  bedrooms_upper_bound: 2
+  mrt_line: 405 near polo ground
+  net_size: 200hz
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
