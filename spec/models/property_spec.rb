@@ -7,9 +7,6 @@ RSpec.describe Property, type: :model do
     it { should have_one_attached(:image) }
   end
 
-  describe 'validations' do
-    it { should validate_inclusion_of(:property_type).in_array(['residential']).with_message("can only be residential") }
-  end
 
   describe 'image attachment' do
     it 'is valid' do

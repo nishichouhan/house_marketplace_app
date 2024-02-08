@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :property do
     property_type { "residential" }
-    city { "Example City" }
+    city { "Taipei" }
     district { "Example District" }
     bedrooms { 2 }
     rent_per_month { "1200.50" }
